@@ -10,16 +10,20 @@ A demo web application that authenticates users via Wultra Mobile Token.
 
 1. Install JDK 11
 2. Install Maven 3.6
-3. Create an API Key at https://sendgrid.com/
-4. Clone this repository
-5. Run `mvn clean package spring-boot:repackage`
-6. Configure the following application properties:
+3. Install PostgreSQL 13.5
+4. Create an API Key at https://sendgrid.com/
+5. Clone this repository
+6. Run `mvn clean package spring-boot:repackage`
+7. Configure the following application properties:
    * `email.email-verification.body` to the body of the sent email verification emails in the format of a MessageFormat pattern with a single format element representing a UUID verification code (e.g. `Your email verification link is: http://example.com?code={0}.`)
    * `email.from.address` to the email address of the sent emails' sender
    * `sendgrid.api-key` to the SendGrid API Key
+   * `spring.datasource.url` to the URL of the PostgreSQL database
+   * `spring.datasource.username` to the name of the PostgreSQL user
+   * `spring.datasource.password` to the password of the PostgreSQL user
    * optionally, `email.email-verification.subject` to the subject of the sent email verification emails
    * optionally, `email.from.name` to the display name of the sent emails' sender
-7. Run `java -jar target/mtoken-0.0.1-SNAPSHOT.jar`
+8. Run `java -jar target/mtoken-0.0.1-SNAPSHOT.jar`
 
 ## Documentation
 
