@@ -23,15 +23,15 @@ import com.wultra.demo.mtoken.exception.EmailException;
 import com.wultra.demo.mtoken.facade.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @Tag(name = "Users")
@@ -72,5 +72,25 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(registration);
+    }
+
+    @GetMapping(path = "/email-confirmation", produces = "application/json")
+    @Operation(
+            summary = "Verify the email address of a registered user.",
+            description = "Confirms the user's email address and invalidates the verification code. Render the activationQrCodeData as a QR code and let user to scan it in order to activate the Mobile Token.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "The email address has been verified. activationQrCodeData is present in the response."),
+                    @ApiResponse(responseCode = "404", description = "No user with the given verification code has been found.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public ResponseEntity<RegistrationDto> confirmEmail(
+            @RequestParam @Schema(description = "The user's verification code.", example = "f81d4fae-7dec-11d0-a765-00a0c91e6bf6") UUID code
+    ) {
+        RegistrationDto registration = userFacade.confirmEmail(code);
+        if (registration == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(registration);
     }
 }
