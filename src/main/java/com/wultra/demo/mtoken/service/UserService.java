@@ -16,24 +16,33 @@
  */
 package com.wultra.demo.mtoken.service;
 
+import com.wultra.demo.mtoken.data.dao.IUserRepository;
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.data.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserService {
     private final UserMapper userMapper;
+    private final IUserRepository userRepository;
 
-    public UserService(UserMapper userMapper) {
+    public UserService(UserMapper userMapper, IUserRepository userRepository) {
         this.userMapper = userMapper;
+        this.userRepository = userRepository;
     }
 
     public UserDto create(NewUserDto newUserDto) {
         UserDto userDto = userMapper.toUserDto(newUserDto);
         userDto.setId(UUID.randomUUID());
         return userDto;
+    }
+
+    public Optional<User> readByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
