@@ -58,4 +58,21 @@ public class UserFacade {
 
         return userMapper.toUserDto(user);
     }
+
+    public UserDto resendEmailVerification(String email) throws EmailException, IOException {
+        Optional<User> optionalUser = userService.readByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        UUID emailVerificationCode = secretService.generateEmailVerificationCode();
+
+        User user = optionalUser.get();
+        user.setVerificationCode(emailVerificationCode);
+        user = userService.update(user);
+
+        emailService.sendEmailVerification(user);
+
+        return userMapper.toUserDto(user);
+    }
 }
