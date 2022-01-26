@@ -24,6 +24,8 @@ import com.wultra.demo.mtoken.exception.EmailException;
 import com.wultra.demo.mtoken.service.IEmailService;
 import com.wultra.demo.mtoken.service.SecretService;
 import com.wultra.demo.mtoken.service.UserService;
+import com.wultra.mtoken.rest.data.dto.NewRegistrationDto;
+import com.wultra.mtoken.rest.service.WultraMtokenService;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -36,12 +38,20 @@ public class UserFacade {
     private final SecretService secretService;
     private final UserMapper userMapper;
     private final UserService userService;
+    private final WultraMtokenService wultraMtokenService;
 
-    public UserFacade(IEmailService emailService, SecretService secretService, UserMapper userMapper, UserService userService) {
+    public UserFacade(
+            IEmailService emailService,
+            SecretService secretService,
+            UserMapper userMapper,
+            UserService userService,
+            WultraMtokenService wultraMtokenService
+    ) {
         this.emailService = emailService;
         this.secretService = secretService;
         this.userMapper = userMapper;
         this.userService = userService;
+        this.wultraMtokenService = wultraMtokenService;
     }
 
     public RegistrationDto register(NewUserDto newUserDto) throws EmailException, IOException {
@@ -74,5 +84,23 @@ public class UserFacade {
         emailService.sendEmailVerification(user);
 
         return userMapper.toRegistrationDto(user);
+    }
+
+    public RegistrationDto confirmEmail(UUID emailVerificationCode) {
+        Optional<User> optionalUser = userService.readByVerificationCode(emailVerificationCode);
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        User user = optionalUser.get();
+
+        NewRegistrationDto newRegistrationDto = new NewRegistrationDto();
+        newRegistrationDto.setUserId(user.getId().toString());
+        String activationQrCodeData = wultraMtokenService.createRegistration(newRegistrationDto);
+
+        user.setVerificationCode(null);
+        user = userService.update(user);
+
+        return userMapper.toRegistrationDto(activationQrCodeData, user);
     }
 }

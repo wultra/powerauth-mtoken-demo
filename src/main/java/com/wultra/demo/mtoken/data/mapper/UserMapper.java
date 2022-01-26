@@ -23,6 +23,8 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    RegistrationDto toRegistrationDto(String activationQrCodeData, User user);
+
     RegistrationDto toRegistrationDto(User user);
 
     User toUser(NewUserDto newUserDto);
