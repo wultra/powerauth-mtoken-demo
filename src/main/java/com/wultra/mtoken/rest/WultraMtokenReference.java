@@ -14,19 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wultra.demo.mtoken;
+package com.wultra.mtoken.rest;
 
-import com.wultra.mtoken.rest.WultraMtokenReference;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-
-@SpringBootApplication
-@ComponentScan(basePackageClasses = {Application.class, WultraMtokenReference.class})
-public class Application {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
+public interface WultraMtokenReference {
 }
