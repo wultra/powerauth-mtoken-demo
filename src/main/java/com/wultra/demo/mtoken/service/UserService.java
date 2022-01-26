@@ -45,4 +45,8 @@ public class UserService {
     public Optional<User> readByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User update(User user) {
+        return userRepository.save(user);
+    }
 }
