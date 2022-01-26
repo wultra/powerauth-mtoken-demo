@@ -46,6 +46,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public Optional<User> readByVerificationCode(UUID verificationCode) {
+        return userRepository.findByVerificationCode(verificationCode);
+    }
+
     public User update(User user) {
         return userRepository.save(user);
     }
