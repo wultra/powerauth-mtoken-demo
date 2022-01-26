@@ -48,6 +48,10 @@ public class User {
         this.email = email;
     }
 
+    public String getFullName() {
+        return getName() + " " + getSurname();
+    }
+
     public UUID getId() {
         return id;
     }

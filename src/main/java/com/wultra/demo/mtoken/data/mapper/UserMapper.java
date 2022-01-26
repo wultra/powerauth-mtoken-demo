@@ -18,9 +18,12 @@ package com.wultra.demo.mtoken.data.mapper;
 
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.entity.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserDto toUserDto(NewUserDto newUserDto);
+    User toUser(NewUserDto newUserDto);
+
+    UserDto toUserDto(User user);
 }

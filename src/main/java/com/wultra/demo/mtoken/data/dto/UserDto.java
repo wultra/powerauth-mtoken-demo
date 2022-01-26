@@ -16,7 +16,6 @@
  */
 package com.wultra.demo.mtoken.data.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
@@ -60,11 +59,6 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    @JsonIgnore
-    public String getFullName() {
-        return getName() + " " + getSurname();
     }
 
     public String getName() {

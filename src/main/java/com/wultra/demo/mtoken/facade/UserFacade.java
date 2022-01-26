@@ -18,6 +18,8 @@ package com.wultra.demo.mtoken.facade;
 
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.entity.User;
+import com.wultra.demo.mtoken.data.mapper.UserMapper;
 import com.wultra.demo.mtoken.exception.EmailException;
 import com.wultra.demo.mtoken.service.IEmailService;
 import com.wultra.demo.mtoken.service.SecretService;
@@ -25,27 +27,35 @@ import com.wultra.demo.mtoken.service.UserService;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class UserFacade {
     private final IEmailService emailService;
     private final SecretService secretService;
+    private final UserMapper userMapper;
     private final UserService userService;
 
-    public UserFacade(IEmailService emailService, SecretService secretService, UserService userService) {
+    public UserFacade(IEmailService emailService, SecretService secretService, UserMapper userMapper, UserService userService) {
         this.emailService = emailService;
         this.secretService = secretService;
+        this.userMapper = userMapper;
         this.userService = userService;
     }
 
     public UserDto register(NewUserDto newUserDto) throws EmailException, IOException {
-        UserDto userDto = userService.create(newUserDto);
+        Optional<User> optionalUser = userService.readByEmail(newUserDto.getEmail());
+        if (optionalUser.isPresent()) {
+            return userMapper.toUserDto(optionalUser.get());
+        }
 
         UUID emailVerificationCode = secretService.generateEmailVerificationCode();
 
-        emailService.sendEmailVerification(userDto, emailVerificationCode.toString());
+        User user = userService.create(newUserDto, emailVerificationCode);
 
-        return userDto;
+        emailService.sendEmailVerification(user);
+
+        return userMapper.toUserDto(user);
     }
 }

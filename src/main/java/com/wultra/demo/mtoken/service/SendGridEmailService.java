@@ -23,7 +23,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.exception.EmailException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -56,10 +56,10 @@ public class SendGridEmailService implements IEmailService {
     }
 
     @Override
-    public void sendEmailVerification(UserDto toUser, String emailVerificationCode) throws EmailException, IOException {
+    public void sendEmailVerification(User toUser) throws EmailException, IOException {
         Email to = new Email(toUser.getEmail(), toUser.getFullName());
 
-        Object[] bodyArgs = {emailVerificationCode};
+        Object[] bodyArgs = {toUser.getVerificationCode()};
         String body = emailVerificationBodyFormat.format(bodyArgs);
         Content content = new Content("text/plain", body);
 

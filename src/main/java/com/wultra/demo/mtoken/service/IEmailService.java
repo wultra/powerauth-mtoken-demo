@@ -16,11 +16,11 @@
  */
 package com.wultra.demo.mtoken.service;
 
-import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.exception.EmailException;
 
 import java.io.IOException;
 
 public interface IEmailService {
-    void sendEmailVerification(UserDto to, String verificationLink) throws EmailException, IOException;
+    void sendEmailVerification(User to) throws EmailException, IOException;
 }
