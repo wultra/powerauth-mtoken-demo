@@ -16,6 +16,7 @@
  */
 package com.wultra.demo.mtoken.controller;
 
+import com.wultra.demo.mtoken.data.dto.EmailDto;
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.UserDto;
 import com.wultra.demo.mtoken.exception.EmailException;
@@ -25,9 +26,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -42,7 +43,6 @@ public class UserController {
     }
 
     @PostMapping(path = "/registration", consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(
             summary = "Register a new user",
             description = "Registers the user and sends a verification link to the user's email.",
@@ -51,7 +51,26 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }
     )
-    public UserDto register(@RequestBody NewUserDto newUser) throws EmailException, IOException {
-        return userFacade.register(newUser);
+    public ResponseEntity<UserDto> register(@RequestBody NewUserDto newUser) throws EmailException, IOException {
+        UserDto user = userFacade.register(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PostMapping(path = "/resend-email-verification", consumes = "application/json", produces = "application/json")
+    @Operation(
+            summary = "Send a new verification link to a registered user.",
+            description = "Generates a new verification code and sends it to the user's email.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "The email has been sent."),
+                    @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public ResponseEntity<UserDto> resendEmailVerification(@RequestBody EmailDto email) throws EmailException, IOException {
+        UserDto user = userFacade.resendEmailVerification(email.getEmail());
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
 }
