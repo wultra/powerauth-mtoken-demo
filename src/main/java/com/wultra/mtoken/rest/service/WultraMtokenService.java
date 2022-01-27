@@ -18,8 +18,10 @@ package com.wultra.mtoken.rest.service;
 
 import com.wultra.mtoken.rest.data.dto.ActivationQrCodeDataDto;
 import com.wultra.mtoken.rest.data.dto.NewRegistrationDto;
+import com.wultra.mtoken.rest.data.dto.RegistrationStatusDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class WultraMtokenService {
@@ -32,5 +34,14 @@ public class WultraMtokenService {
     public String createRegistration(NewRegistrationDto newRegistrationDto) {
         ActivationQrCodeDataDto activationQrCodeDataDto = wultraMtokenRestTemplate.postForObject("/registration", newRegistrationDto, ActivationQrCodeDataDto.class);
         return activationQrCodeDataDto.getActivationQrCodeData();
+    }
+
+    public RegistrationStatusDto getRegistration(String userId) {
+        String url = UriComponentsBuilder
+                .fromPath("/registration")
+                .queryParam("userId", userId)
+                .build()
+                .toUriString();
+        return wultraMtokenRestTemplate.getForObject(url, RegistrationStatusDto.class);
     }
 }
