@@ -17,6 +17,7 @@
 package com.wultra.mtoken.rest.service;
 
 import com.wultra.mtoken.rest.data.dto.ActivationQrCodeDataDto;
+import com.wultra.mtoken.rest.data.dto.CommitRegistrationDto;
 import com.wultra.mtoken.rest.data.dto.NewRegistrationDto;
 import com.wultra.mtoken.rest.data.dto.RegistrationStatusDto;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class WultraMtokenService {
 
     public WultraMtokenService(RestTemplate wultraMtokenRestTemplate) {
         this.wultraMtokenRestTemplate = wultraMtokenRestTemplate;
+    }
+
+    public void commitRegistration(CommitRegistrationDto commitRegistrationDto) {
+        wultraMtokenRestTemplate.postForObject("/registration/commit", commitRegistrationDto, Object.class);
     }
 
     public String createRegistration(NewRegistrationDto newRegistrationDto) {
