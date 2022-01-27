@@ -34,6 +34,10 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false, length = 7)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @Column(nullable = false)
     private String surname;
 
@@ -66,6 +70,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     public String getSurname() {

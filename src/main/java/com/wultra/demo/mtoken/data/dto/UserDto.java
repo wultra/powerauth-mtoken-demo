@@ -16,6 +16,7 @@
  */
 package com.wultra.demo.mtoken.data.dto;
 
+import com.wultra.demo.mtoken.data.entity.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
@@ -45,6 +46,10 @@ public class UserDto {
     @Schema(description = "The user's surname.", example = "Doe")
     private String surname;
 
+    @NotNull
+    @Schema(description = "The user's status. If PENDING, the user's email address needs to be verified. If CREATED, the user's Mobile Token needs to be activated. If ACTIVE, the user's registration was completed.", example = "ACTIVE")
+    private UserStatus status;
+
     public UUID getId() {
         return id;
     }
@@ -67,6 +72,14 @@ public class UserDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     public String getSurname() {

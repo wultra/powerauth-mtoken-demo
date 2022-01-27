@@ -19,6 +19,7 @@ package com.wultra.demo.mtoken.service;
 import com.wultra.demo.mtoken.data.dao.IUserRepository;
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.entity.User;
+import com.wultra.demo.mtoken.data.entity.UserStatus;
 import com.wultra.demo.mtoken.data.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class UserService {
     public User create(NewUserDto newUserDto, UUID verificationCode) {
         User user = userMapper.toUser(newUserDto);
         user.setId(UUID.randomUUID());
+        user.setStatus(UserStatus.PENDING);
         user.setVerificationCode(verificationCode);
         return userRepository.save(user);
     }
