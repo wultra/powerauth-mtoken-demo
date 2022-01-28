@@ -93,4 +93,24 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(registration);
     }
+
+    @GetMapping(path = "/token-activation", produces = "application/json")
+    @Operation(
+            summary = "Finish a user's Mobile Token activation.",
+            description = "Checks whether the registered user has activated the token already in order to finish the registration. This endpoint is intended to be polled regularly until the status of the user is ACTIVE.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "The token activation has been checked. If the token is active, activationFingerprint is present in the response. Otherwise, activationQrCodeData is present in the response."),
+                    @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public ResponseEntity<RegistrationDto> activateToken(
+            @RequestParam @Schema(description = "The user's email address.", example = "john.doe@example.com") String email
+    ) {
+        RegistrationDto registration = userFacade.activateToken(email);
+        if (registration == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(registration);
+    }
 }
