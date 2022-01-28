@@ -47,7 +47,7 @@ public class UserController {
             summary = "Register a new user",
             description = "Registers the user and sends a verification link to the user's email.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "The user has been registered. activationQrCodeData is not present in the response."),
+                    @ApiResponse(responseCode = "201", description = "The user has been registered. activationFingerprint and activationQrCodeData are not present in the response."),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }
     )
@@ -61,7 +61,7 @@ public class UserController {
             summary = "Send a new verification link to a registered user.",
             description = "Generates a new verification code and sends it to the user's email.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "The email has been sent. activationQrCodeData is not present in the response."),
+                    @ApiResponse(responseCode = "200", description = "The email has been sent. activationFingerprint and activationQrCodeData are not present in the response."),
                     @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }
@@ -79,7 +79,7 @@ public class UserController {
             summary = "Verify the email address of a registered user.",
             description = "Confirms the user's email address and invalidates the verification code. Render the activationQrCodeData as a QR code and let user to scan it in order to activate the Mobile Token.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "The email address has been verified. activationQrCodeData is present in the response."),
+                    @ApiResponse(responseCode = "201", description = "The email address has been verified. activationQrCodeData is present in the response. activationFingerprint is not present in the response."),
                     @ApiResponse(responseCode = "404", description = "No user with the given verification code has been found.", content = @Content),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }

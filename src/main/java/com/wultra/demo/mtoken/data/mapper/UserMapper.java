@@ -18,12 +18,15 @@ package com.wultra.demo.mtoken.data.mapper;
 
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.RegistrationDto;
+import com.wultra.demo.mtoken.data.entity.Device;
 import com.wultra.demo.mtoken.data.entity.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     RegistrationDto toRegistrationDto(String activationQrCodeData, User user);
+
+    RegistrationDto toRegistrationDto(Device device);
 
     RegistrationDto toRegistrationDto(User user);
 

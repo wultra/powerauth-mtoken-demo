@@ -26,9 +26,21 @@ public class RegistrationDto {
     @Schema(description = "A string for the activation QR code. If you want to allow manual code entry as well in your app, you can split the string by the # character and use the first part of the split. The part after the # is data signature that helps the mobile device recognize an authentic QR code data while scanning the code.", example = "23456-DEFGH-77777-77777#MEUCIDFFx60vcqDcqRY014uE+5CH38lJ/NOVNoaGHWpE+7fVAiEA8LsWi9AvRJPwRnlSSOB3O080mXd6YbRt74DLQqrrLlg=")
     private String activationQrCodeData;
 
+    @Size(min = 1, max = 255)
+    @Schema(description = "The value representing cryptographic material exchanged with the Mobile Token.", example = "52649917")
+    private String activationFingerprint;
+
     @NotNull
     @Schema(description = "The registered user.")
     private UserDto user;
+
+    public String getActivationFingerprint() {
+        return activationFingerprint;
+    }
+
+    public void setActivationFingerprint(String activationFingerprint) {
+        this.activationFingerprint = activationFingerprint;
+    }
 
     public String getActivationQrCodeData() {
         return activationQrCodeData;
