@@ -17,6 +17,7 @@
 package com.wultra.demo.mtoken.controller;
 
 import com.wultra.demo.mtoken.data.dto.EmailDto;
+import com.wultra.demo.mtoken.data.dto.LoginOperationDto;
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.RegistrationDto;
 import com.wultra.demo.mtoken.exception.EmailException;
@@ -112,5 +113,23 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(registration);
+    }
+
+    @PostMapping(path = "/login", consumes = "application/json", produces = "application/json")
+    @Operation(
+            summary = "Request an approval to log a registered user in.",
+            description = "Creates a login operation that needs to be reviewed and either approved or rejected via the user's Mobile Token.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "The approval has been requested."),
+                    @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public ResponseEntity<LoginOperationDto> login(@RequestBody EmailDto email) {
+        LoginOperationDto loginOperation = userFacade.login(email.getEmail());
+        if (loginOperation == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(loginOperation);
     }
 }
