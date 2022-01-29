@@ -14,17 +14,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wultra.demo.mtoken.data.mapper;
-
-import com.wultra.demo.mtoken.data.dto.LoginOperationDto;
-import com.wultra.demo.mtoken.data.entity.User;
-import com.wultra.mtoken.rest.data.dto.OperationStatusDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
-@Mapper(componentModel = "spring")
-public interface OperationMapper {
-    @Mapping(target = "operationId", source = "operationStatusDto.operationId")
-    @Mapping(target = "status", source = "operationStatusDto.status")
-    LoginOperationDto toLoginOperationDto(OperationStatusDto operationStatusDto, User user);
-}
+ALTER TABLE "user"
+    ADD operation_id UUID;

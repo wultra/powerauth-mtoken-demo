@@ -16,23 +16,19 @@
  */
 package com.wultra.demo.mtoken.facade;
 
-import com.wultra.demo.mtoken.data.dto.NewDeviceDto;
-import com.wultra.demo.mtoken.data.dto.NewUserDto;
-import com.wultra.demo.mtoken.data.dto.RegistrationDto;
+import com.wultra.demo.mtoken.data.dto.*;
 import com.wultra.demo.mtoken.data.entity.Device;
 import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.data.entity.UserStatus;
 import com.wultra.demo.mtoken.data.mapper.DeviceMapper;
+import com.wultra.demo.mtoken.data.mapper.OperationMapper;
 import com.wultra.demo.mtoken.data.mapper.UserMapper;
 import com.wultra.demo.mtoken.exception.EmailException;
 import com.wultra.demo.mtoken.service.DeviceService;
 import com.wultra.demo.mtoken.service.IEmailService;
 import com.wultra.demo.mtoken.service.SecretService;
 import com.wultra.demo.mtoken.service.UserService;
-import com.wultra.mtoken.rest.data.dto.CommitRegistrationDto;
-import com.wultra.mtoken.rest.data.dto.NewRegistrationDto;
-import com.wultra.mtoken.rest.data.dto.Registration;
-import com.wultra.mtoken.rest.data.dto.RegistrationStatusDto;
+import com.wultra.mtoken.rest.data.dto.*;
 import com.wultra.mtoken.rest.service.WultraMtokenService;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +41,7 @@ public class UserFacade {
     private final DeviceMapper deviceMapper;
     private final DeviceService deviceService;
     private final IEmailService emailService;
+    private final OperationMapper operationMapper;
     private final SecretService secretService;
     private final UserMapper userMapper;
     private final UserService userService;
@@ -54,6 +51,7 @@ public class UserFacade {
             DeviceMapper deviceMapper,
             DeviceService deviceService,
             IEmailService emailService,
+            OperationMapper operationMapper,
             SecretService secretService,
             UserMapper userMapper,
             UserService userService,
@@ -62,6 +60,7 @@ public class UserFacade {
         this.deviceMapper = deviceMapper;
         this.deviceService = deviceService;
         this.emailService = emailService;
+        this.operationMapper = operationMapper;
         this.secretService = secretService;
         this.userMapper = userMapper;
         this.userService = userService;
@@ -143,5 +142,24 @@ public class UserFacade {
         user = userService.update(user);
 
         return userMapper.toRegistrationDto(device);
+    }
+
+    public LoginOperationDto login(String email) {
+        Optional<User> optionalUser = userService.readByEmail(email);
+        if (optionalUser.isEmpty() || optionalUser.get().getStatus() != UserStatus.ACTIVE) {
+            return null;
+        }
+
+        User user = optionalUser.get();
+
+        NewOperationDto newOperationDto = new NewOperationDto();
+        newOperationDto.setUserId(user.getId().toString());
+        newOperationDto.setTemplate(OperationTemplate.login.toString());
+        OperationStatusDto operationStatusDto = wultraMtokenService.createOperation(newOperationDto);
+
+        user.setOperationId(operationStatusDto.getOperationId());
+        user = userService.update(user);
+
+        return operationMapper.toLoginOperationDto(operationStatusDto, user);
     }
 }

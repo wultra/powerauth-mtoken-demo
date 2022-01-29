@@ -44,6 +44,9 @@ public class User {
     @Column(name = "verification_code")
     private UUID verificationCode;
 
+    @Column(name = "operation_id")
+    private UUID operationId;
+
     public String getEmail() {
         return email;
     }
@@ -70,6 +73,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UUID getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(UUID operationId) {
+        this.operationId = operationId;
     }
 
     public UserStatus getStatus() {
