@@ -42,6 +42,15 @@ public class WultraMtokenService {
         return activationQrCodeDataDto.getActivationQrCodeData();
     }
 
+    public OperationStatusDto getOperation(String operationId) {
+        String url = UriComponentsBuilder
+                .fromPath("/operations")
+                .queryParam("operationId", operationId)
+                .build()
+                .toUriString();
+        return wultraMtokenRestTemplate.getForObject(url, OperationStatusDto.class);
+    }
+
     public RegistrationStatusDto getRegistration(String userId) {
         String url = UriComponentsBuilder
                 .fromPath("/registration")
