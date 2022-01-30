@@ -30,14 +30,17 @@ import com.wultra.demo.mtoken.service.SecretService;
 import com.wultra.demo.mtoken.service.UserService;
 import com.wultra.mtoken.rest.data.dto.*;
 import com.wultra.mtoken.rest.service.WultraMtokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class UserFacade {
+    private final long accessTokenValidityInSeconds;
     private final DeviceMapper deviceMapper;
     private final DeviceService deviceService;
     private final IEmailService emailService;
@@ -48,6 +51,7 @@ public class UserFacade {
     private final WultraMtokenService wultraMtokenService;
 
     public UserFacade(
+            @Value("${accesstoken.validity}") long accessTokenValidityInSeconds,
             DeviceMapper deviceMapper,
             DeviceService deviceService,
             IEmailService emailService,
@@ -57,6 +61,7 @@ public class UserFacade {
             UserService userService,
             WultraMtokenService wultraMtokenService
     ) {
+        this.accessTokenValidityInSeconds = accessTokenValidityInSeconds;
         this.deviceMapper = deviceMapper;
         this.deviceService = deviceService;
         this.emailService = emailService;
@@ -158,6 +163,31 @@ public class UserFacade {
         OperationStatusDto operationStatusDto = wultraMtokenService.createOperation(newOperationDto);
 
         user.setOperationId(operationStatusDto.getOperationId());
+        user = userService.update(user);
+
+        return operationMapper.toLoginOperationDto(operationStatusDto, user);
+    }
+
+    public LoginOperationDto checkLogin(String email) {
+        Optional<User> optionalUser = userService.readByEmail(email);
+        if (optionalUser.isEmpty() || optionalUser.get().getStatus() != UserStatus.ACTIVE) {
+            return null;
+        }
+
+        User user = optionalUser.get();
+
+        OperationStatusDto operationStatusDto = wultraMtokenService.getOperation(user.getOperationId().toString());
+        if (
+                !operationStatusDto.getTemplate().equals(OperationTemplate.login.name()) ||
+                operationStatusDto.getStatus() != OperationStatus.APPROVED
+        ) {
+            return operationMapper.toLoginOperationDto(operationStatusDto, user);
+        }
+
+        String accessToken = secretService.generateAccessToken();
+        user.setOperationId(null);
+        user.setAccessToken(accessToken);
+        user.setAccessTokenExpires(OffsetDateTime.now().plusSeconds(accessTokenValidityInSeconds));
         user = userService.update(user);
 
         return operationMapper.toLoginOperationDto(operationStatusDto, user);

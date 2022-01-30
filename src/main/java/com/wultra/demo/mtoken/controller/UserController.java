@@ -120,7 +120,7 @@ public class UserController {
             summary = "Request an approval to log a registered user in.",
             description = "Creates a login operation that needs to be reviewed and either approved or rejected via the user's Mobile Token.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "The approval has been requested."),
+                    @ApiResponse(responseCode = "201", description = "The approval has been requested. accessToken and accessTokenExpires are not present in the response."),
                     @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }

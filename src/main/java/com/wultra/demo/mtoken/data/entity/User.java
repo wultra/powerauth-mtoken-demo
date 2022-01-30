@@ -17,10 +17,12 @@
 package com.wultra.demo.mtoken.data.entity;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "\"user\"", indexes = {
+        @Index(name = "uc_user_access_token", columnList = "access_token", unique = true),
         @Index(name = "uc_user_email", columnList = "email", unique = true),
         @Index(name = "uc_user_verificationcode", columnList = "verification_code", unique = true)
 })
@@ -46,6 +48,28 @@ public class User {
 
     @Column(name = "operation_id")
     private UUID operationId;
+
+    @Column(name = "access_token", length = 1024)
+    private String accessToken;
+
+    @Column(name = "access_token_expires", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private OffsetDateTime accessTokenExpires;
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public OffsetDateTime getAccessTokenExpires() {
+        return accessTokenExpires;
+    }
+
+    public void setAccessTokenExpires(OffsetDateTime accessTokenExpires) {
+        this.accessTokenExpires = accessTokenExpires;
+    }
 
     public String getEmail() {
         return email;

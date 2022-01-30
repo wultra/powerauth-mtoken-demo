@@ -1,5 +1,6 @@
 accesstoken:
   bytes: 32
+  validity: 3600
 email:
   email-verification:
     subject: Verify your email address

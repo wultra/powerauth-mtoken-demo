@@ -26,5 +26,6 @@ import org.mapstruct.Mapping;
 public interface OperationMapper {
     @Mapping(target = "operationId", source = "operationStatusDto.operationId")
     @Mapping(target = "status", source = "operationStatusDto.status")
+    @Mapping(target = "user", source = "user")
     LoginOperationDto toLoginOperationDto(OperationStatusDto operationStatusDto, User user);
 }

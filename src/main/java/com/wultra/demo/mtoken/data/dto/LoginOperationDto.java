@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -49,9 +50,32 @@ public class LoginOperationDto {
     @Schema(description = "When the operation will expire.", example = "2021-12-31T23:59:59.02Z")
     private OffsetDateTime timestampExpires;
 
+    @Size(min = 32, max = 1024)
+    @Schema(description = "An access token that can be used to make API requests on behalf of the user.", example = "8R0MSSoHTXghxUma5YXATMmOSv7nEUHZyyI9Q2rbJMg=")
+    private String accessToken;
+
+    @Schema(description = "When the access token will expire.", example = "2021-12-31T23:59:59.000001Z")
+    private OffsetDateTime accessTokenExpires;
+
     @NotNull
     @Schema(description = "The user to be logged in.")
     private UserDto user;
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public OffsetDateTime getAccessTokenExpires() {
+        return accessTokenExpires;
+    }
+
+    public void setAccessTokenExpires(OffsetDateTime accessTokenExpires) {
+        this.accessTokenExpires = accessTokenExpires;
+    }
 
     public long getFailureCount() {
         return failureCount;
