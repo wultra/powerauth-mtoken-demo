@@ -25,6 +25,7 @@ A demo web application that authenticates users via Wultra Mobile Token.
    * `wultra-mtoken.rest.root-uri` to the base URL of the Wultra Mobile Token API
    * `wultra-mtoken.rest.username` to the name of the Wultra Mobile Token API user
    * `wultra-mtoken.rest.password` to the password of the Wultra Mobile Token API user
+   * optionally, `accesstoken.bytes` to the length of access tokens in bytes before encoding to Base64
    * optionally, `email.email-verification.subject` to the subject of the sent email verification emails
    * optionally, `email.from.name` to the display name of the sent emails' sender
 9. Run `java -jar target/mtoken-0.0.1-SNAPSHOT.jar`

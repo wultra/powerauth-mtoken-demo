@@ -16,12 +16,29 @@
  */
 package com.wultra.demo.mtoken.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
 public class SecretService {
+    private final int accessTokenBytes;
+    private final SecureRandom strongSecureRandom;
+
+    public SecretService(@Value("${accesstoken.bytes}") int accessTokenBytes, SecureRandom strongSecureRandom) {
+        this.accessTokenBytes = accessTokenBytes;
+        this.strongSecureRandom = strongSecureRandom;
+    }
+
+    public String generateAccessToken() {
+        byte[] randomBytes = new byte[accessTokenBytes];
+        strongSecureRandom.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().encodeToString(randomBytes);
+    }
+
     public UUID generateEmailVerificationCode() {
         return UUID.randomUUID();
     }
