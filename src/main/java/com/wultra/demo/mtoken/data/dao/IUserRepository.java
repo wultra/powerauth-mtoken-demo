@@ -23,6 +23,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IUserRepository extends CrudRepository<User, UUID> {
+    Optional<User> findByAccessToken(String accessToken);
+
     Optional<User> findByEmail(String email);
 
     Optional<User> findByVerificationCode(UUID verificationCode);

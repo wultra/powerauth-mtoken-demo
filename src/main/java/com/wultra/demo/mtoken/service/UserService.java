@@ -44,6 +44,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public Optional<User> readByAccessToken(String accessToken) {
+        return userRepository.findByAccessToken(accessToken);
+    }
+
     public Optional<User> readByEmail(String email) {
         return userRepository.findByEmail(email);
     }
