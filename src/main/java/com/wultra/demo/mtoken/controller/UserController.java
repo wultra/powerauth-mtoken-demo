@@ -132,4 +132,24 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(loginOperation);
     }
+
+    @GetMapping(path = "/login", produces = "application/json")
+    @Operation(
+            summary = "Finish a registered user's login.",
+            description = "Checks whether the user has approved the login operation already in order to issue an access token. This endpoint is intended to be polled regularly until the status of the operation is not PENDING.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "The operation has been checked. If the operation has been approved, accessToken and accessTokenExpires are present in the response."),
+                    @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public ResponseEntity<LoginOperationDto> checkLogin(
+            @RequestParam @Schema(description = "The user's email address.", example = "john.doe@example.com") String email
+    ) {
+        LoginOperationDto loginOperation = userFacade.checkLogin(email);
+        if (loginOperation == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(loginOperation);
+    }
 }
