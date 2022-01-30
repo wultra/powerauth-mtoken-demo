@@ -18,7 +18,7 @@ package com.wultra.demo.mtoken.controller;
 
 import com.wultra.demo.mtoken.data.dto.EmailDto;
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
-import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.dto.RegistrationDto;
 import com.wultra.demo.mtoken.exception.EmailException;
 import com.wultra.demo.mtoken.facade.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,13 +47,13 @@ public class UserController {
             summary = "Register a new user",
             description = "Registers the user and sends a verification link to the user's email.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "The user has been registered."),
+                    @ApiResponse(responseCode = "201", description = "The user has been registered. activationQrCodeData is not present in the response."),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }
     )
-    public ResponseEntity<UserDto> register(@RequestBody NewUserDto newUser) throws EmailException, IOException {
-        UserDto user = userFacade.register(newUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<RegistrationDto> register(@RequestBody NewUserDto newUser) throws EmailException, IOException {
+        RegistrationDto registration = userFacade.register(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registration);
     }
 
     @PostMapping(path = "/resend-email-verification", consumes = "application/json", produces = "application/json")
@@ -61,16 +61,16 @@ public class UserController {
             summary = "Send a new verification link to a registered user.",
             description = "Generates a new verification code and sends it to the user's email.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "The email has been sent."),
+                    @ApiResponse(responseCode = "200", description = "The email has been sent. activationQrCodeData is not present in the response."),
                     @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }
     )
-    public ResponseEntity<UserDto> resendEmailVerification(@RequestBody EmailDto email) throws EmailException, IOException {
-        UserDto user = userFacade.resendEmailVerification(email.getEmail());
-        if (user == null) {
+    public ResponseEntity<RegistrationDto> resendEmailVerification(@RequestBody EmailDto email) throws EmailException, IOException {
+        RegistrationDto registration = userFacade.resendEmailVerification(email.getEmail());
+        if (registration == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(registration);
     }
 }

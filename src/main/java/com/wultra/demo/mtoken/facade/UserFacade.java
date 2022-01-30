@@ -17,7 +17,7 @@
 package com.wultra.demo.mtoken.facade;
 
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
-import com.wultra.demo.mtoken.data.dto.UserDto;
+import com.wultra.demo.mtoken.data.dto.RegistrationDto;
 import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.data.mapper.UserMapper;
 import com.wultra.demo.mtoken.exception.EmailException;
@@ -44,10 +44,10 @@ public class UserFacade {
         this.userService = userService;
     }
 
-    public UserDto register(NewUserDto newUserDto) throws EmailException, IOException {
+    public RegistrationDto register(NewUserDto newUserDto) throws EmailException, IOException {
         Optional<User> optionalUser = userService.readByEmail(newUserDto.getEmail());
         if (optionalUser.isPresent()) {
-            return userMapper.toUserDto(optionalUser.get());
+            return userMapper.toRegistrationDto(optionalUser.get());
         }
 
         UUID emailVerificationCode = secretService.generateEmailVerificationCode();
@@ -56,10 +56,10 @@ public class UserFacade {
 
         emailService.sendEmailVerification(user);
 
-        return userMapper.toUserDto(user);
+        return userMapper.toRegistrationDto(user);
     }
 
-    public UserDto resendEmailVerification(String email) throws EmailException, IOException {
+    public RegistrationDto resendEmailVerification(String email) throws EmailException, IOException {
         Optional<User> optionalUser = userService.readByEmail(email);
         if (optionalUser.isEmpty()) {
             return null;
@@ -73,6 +73,6 @@ public class UserFacade {
 
         emailService.sendEmailVerification(user);
 
-        return userMapper.toUserDto(user);
+        return userMapper.toRegistrationDto(user);
     }
 }
