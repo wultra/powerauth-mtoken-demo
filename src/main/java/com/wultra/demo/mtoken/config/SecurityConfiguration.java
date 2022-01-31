@@ -16,14 +16,43 @@
  */
 package com.wultra.demo.mtoken.config;
 
+import com.wultra.demo.mtoken.security.BearerTokenAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 @Configuration
-public class SecurityConfiguration {
+@EnableWebSecurity
+@SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "base64", description = "An access token that can be used to make API requests on behalf of a user.")
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        http
+                .addFilterBefore(new BearerTokenAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers(
+                        "/email-confirmation",
+                        "/login",
+                        "/registration",
+                        "/resend-email-verification",
+                        "/swagger-ui*",
+                        "/swagger-ui/*",
+                        "/token-activation",
+                        "/v3/api-docs*",
+                        "/v3/api-docs/*"
+                ).permitAll()
+                .anyRequest().authenticated();
+    }
+
     @Bean
     public SecureRandom strongSecureRandom() throws NoSuchAlgorithmException {
         return SecureRandom.getInstanceStrong();
