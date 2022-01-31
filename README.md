@@ -10,9 +10,12 @@ A demo web application that authenticates users via Wultra Mobile Token.
 
 1. Install JDK 11
 2. Install Maven 3.6
-3. Clone this repository
-4. Run `mvn clean package spring-boot:repackage`
-5. Run `java -jar target/mtoken-0.0.1-SNAPSHOT.jar`
+3. Create an API Key at https://sendgrid.com/
+4. Clone this repository
+5. Run `mvn clean package spring-boot:repackage`
+6. Configure the following application properties:
+   * `sendgrid.api-key` to the SendGrid API Key
+7. Run `java -jar target/mtoken-0.0.1-SNAPSHOT.jar`
 
 ## Documentation
 
