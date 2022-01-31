@@ -20,15 +20,18 @@ import com.wultra.demo.mtoken.data.dto.EmailDto;
 import com.wultra.demo.mtoken.data.dto.LoginOperationDto;
 import com.wultra.demo.mtoken.data.dto.NewUserDto;
 import com.wultra.demo.mtoken.data.dto.RegistrationDto;
+import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.exception.EmailException;
 import com.wultra.demo.mtoken.facade.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -151,5 +154,21 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(loginOperation);
+    }
+
+    @DeleteMapping("/login")
+    @Operation(
+            summary = "Log a registered user out.",
+            description = "Invalidates the access token.",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "The user has been logged out.", content = @Content),
+                    @ApiResponse(responseCode = "403", description = "The given access token has not been issued or has expired.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public ResponseEntity<?> logout(Authentication authentication) {
+        userFacade.logout((User) authentication.getPrincipal());
+        return ResponseEntity.noContent().build();
     }
 }
