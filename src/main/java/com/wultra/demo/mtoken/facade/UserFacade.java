@@ -192,4 +192,10 @@ public class UserFacade {
 
         return operationMapper.toLoginOperationDto(operationStatusDto, user);
     }
+
+    public void logout(User user) {
+        user.setAccessToken(null);
+        user.setAccessTokenExpires(null);
+        user = userService.update(user);
+    }
 }
