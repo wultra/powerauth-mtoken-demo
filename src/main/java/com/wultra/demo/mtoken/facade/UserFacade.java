@@ -157,9 +157,7 @@ public class UserFacade {
 
         User user = optionalUser.get();
 
-        NewOperationDto newOperationDto = new NewOperationDto();
-        newOperationDto.setUserId(user.getId().toString());
-        newOperationDto.setTemplate(OperationTemplate.login.toString());
+        NewOperationDto newOperationDto = operationMapper.toNewOperationDto(user, OperationTemplate.login);
         OperationStatusDto operationStatusDto = wultraMtokenService.createOperation(newOperationDto);
 
         user.setOperationId(operationStatusDto.getOperationId());

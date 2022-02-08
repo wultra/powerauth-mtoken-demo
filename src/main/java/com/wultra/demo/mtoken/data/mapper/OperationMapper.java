@@ -17,15 +17,47 @@
 package com.wultra.demo.mtoken.data.mapper;
 
 import com.wultra.demo.mtoken.data.dto.LoginOperationDto;
+import com.wultra.demo.mtoken.data.dto.NewTransactionDto;
+import com.wultra.demo.mtoken.data.dto.OperationTemplate;
+import com.wultra.demo.mtoken.data.dto.TransactionOperationDto;
 import com.wultra.demo.mtoken.data.entity.User;
+import com.wultra.mtoken.rest.data.dto.NewOperationDto;
 import com.wultra.mtoken.rest.data.dto.OperationStatusDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 @Mapper(componentModel = "spring")
-public interface OperationMapper {
+public abstract class OperationMapper {
     @Mapping(target = "operationId", source = "operationStatusDto.operationId")
     @Mapping(target = "status", source = "operationStatusDto.status")
     @Mapping(target = "user", source = "user")
-    LoginOperationDto toLoginOperationDto(OperationStatusDto operationStatusDto, User user);
+    public abstract LoginOperationDto toLoginOperationDto(OperationStatusDto operationStatusDto, User user);
+
+    public NewOperationDto toNewOperationDto(User user, NewTransactionDto newTransactionDto) {
+        NewOperationDto newOperationDto = toNewOperationDto(user, OperationTemplate.authorize_payment);
+        newOperationDto.setParameters(
+                Map.of(
+                        "amount", newTransactionDto.getAmount().toPlainString(),
+                        "iban", newTransactionDto.getIban()
+                )
+        );
+        return newOperationDto;
+    }
+
+    @Mapping(target = "userId", expression = "java( user.getId().toString() )")
+    public abstract NewOperationDto toNewOperationDto(User user, OperationTemplate template);
+
+    public TransactionOperationDto toTransactionOperationDto(OperationStatusDto operationStatusDto, User user) {
+        TransactionOperationDto transactionOperationDto = toTransactionOperationDtoInternal(operationStatusDto, user);
+        transactionOperationDto.setAmount(new BigDecimal(operationStatusDto.getParameters().get("amount")));
+        transactionOperationDto.setIban(operationStatusDto.getParameters().get("iban"));
+        return transactionOperationDto;
+    }
+
+    @Mapping(target = "operationId", source = "operationStatusDto.operationId")
+    @Mapping(target = "status", source = "operationStatusDto.status")
+    protected abstract TransactionOperationDto toTransactionOperationDtoInternal(OperationStatusDto operationStatusDto, User user);
 }
