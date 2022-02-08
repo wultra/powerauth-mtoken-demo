@@ -81,9 +81,9 @@ public class UserController {
     @GetMapping(path = "/email-confirmation", produces = "application/json")
     @Operation(
             summary = "Verify the email address of a registered user.",
-            description = "Confirms the user's email address and invalidates the verification code. Render the activationQrCodeData as a QR code and let user to scan it in order to activate the Mobile Token.",
+            description = "Confirms the user's email address and invalidates the verification code. Continue to activate the Mobile Token.",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "The email address has been verified. activationQrCodeData is present in the response. activationFingerprint is not present in the response."),
+                    @ApiResponse(responseCode = "201", description = "The email address has been verified. activationFingerprint and activationQrCodeData are not present in the response."),
                     @ApiResponse(responseCode = "404", description = "No user with the given verification code has been found.", content = @Content),
                     @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
             }
@@ -100,8 +100,8 @@ public class UserController {
 
     @GetMapping(path = "/token-activation", produces = "application/json")
     @Operation(
-            summary = "Finish a user's Mobile Token activation.",
-            description = "Checks whether the registered user has activated the token already in order to finish the registration. This endpoint is intended to be polled regularly until the status of the user is ACTIVE.",
+            summary = "Activate a Mobile Token of a registered user.",
+            description = "If the user's token is active, finishes the registration. Otherwise, returns the activation QR code data in order to be rendered to the user. This endpoint is intended to be polled regularly until the status of the user is ACTIVE. The QR code data may change over time.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "The token activation has been checked. If the token is active, activationFingerprint is present in the response. Otherwise, activationQrCodeData is present in the response."),
                     @ApiResponse(responseCode = "404", description = "No user with the given email address has been registered.", content = @Content),

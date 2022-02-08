@@ -111,16 +111,11 @@ public class UserFacade {
         }
 
         User user = optionalUser.get();
-
-        NewRegistrationDto newRegistrationDto = new NewRegistrationDto();
-        newRegistrationDto.setUserId(user.getId().toString());
-        String activationQrCodeData = wultraMtokenService.createRegistration(newRegistrationDto);
-
         user.setStatus(UserStatus.CREATED);
         user.setVerificationCode(null);
         user = userService.update(user);
 
-        return userMapper.toRegistrationDto(activationQrCodeData, user);
+        return userMapper.toRegistrationDto(user);
     }
 
     public RegistrationDto activateToken(String email) {
@@ -132,6 +127,13 @@ public class UserFacade {
         User user = optionalUser.get();
 
         RegistrationStatusDto registrationStatusDto = wultraMtokenService.getRegistration(user.getId().toString());
+        if (registrationStatusDto.getRegistration() == Registration.NONE) {
+            NewRegistrationDto newRegistrationDto = new NewRegistrationDto();
+            newRegistrationDto.setUserId(user.getId().toString());
+            String activationQrCodeData = wultraMtokenService.createRegistration(newRegistrationDto);
+
+            return userMapper.toRegistrationDto(activationQrCodeData, user);
+        }
         if (registrationStatusDto.getRegistration() != Registration.PENDING_COMMIT) {
             return userMapper.toRegistrationDto(registrationStatusDto.getActivationQrCodeData(), user);
         }
