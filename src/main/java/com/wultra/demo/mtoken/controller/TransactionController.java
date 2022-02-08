@@ -53,4 +53,19 @@ public class TransactionController {
     public TransactionOperationDto create(Authentication authentication, @RequestBody NewTransactionDto newTransaction) {
         return transactionFacade.create((User) authentication.getPrincipal(), newTransaction);
     }
+
+    @GetMapping(path = "/transaction", produces = "application/json")
+    @Operation(
+            summary = "Check the status of the user's transaction.",
+            description = "This endpoint is intended to be polled regularly until the status of the operation is not PENDING.",
+            security = @SecurityRequirement(name = "bearerAuth"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "The operation has been checked."),
+                    @ApiResponse(responseCode = "403", description = "The given access token has not been issued or has expired.", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "An unexpected server condition has been encountered.", content = @Content(mediaType = "application/json"))
+            }
+    )
+    public TransactionOperationDto check(Authentication authentication) {
+        return transactionFacade.check((User) authentication.getPrincipal());
+    }
 }
