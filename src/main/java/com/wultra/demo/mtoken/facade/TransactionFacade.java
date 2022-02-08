@@ -47,4 +47,10 @@ public class TransactionFacade {
 
         return operationMapper.toTransactionOperationDto(operationStatusDto, user);
     }
+
+    public TransactionOperationDto check(User user) {
+        OperationStatusDto operationStatusDto = wultraMtokenService.getOperation(user.getOperationId().toString());
+
+        return operationMapper.toTransactionOperationDto(operationStatusDto, user);
+    }
 }
