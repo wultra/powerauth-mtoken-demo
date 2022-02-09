@@ -6,6 +6,14 @@
 
 A demo web application that authenticates users via Wultra Mobile Token.
 
+## Installation
+
+1. Install JDK 11
+2. Install Maven 3.6
+3. Clone this repository
+4. Run `mvn clean package spring-boot:repackage`
+5. Run `java -jar target/mtoken-0.0.1-SNAPSHOT.jar`
+
 ## Documentation
 
 The documentation is available at the [Wultra Developer Portal](https://developers.wultra.com/products/mobile-token).
