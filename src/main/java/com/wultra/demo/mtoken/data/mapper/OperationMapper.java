@@ -18,11 +18,11 @@ package com.wultra.demo.mtoken.data.mapper;
 
 import com.wultra.demo.mtoken.data.dto.LoginOperationDto;
 import com.wultra.demo.mtoken.data.dto.NewTransactionDto;
-import com.wultra.demo.mtoken.data.dto.OperationTemplate;
 import com.wultra.demo.mtoken.data.dto.TransactionOperationDto;
 import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.mtoken.rest.data.dto.NewOperationDto;
 import com.wultra.mtoken.rest.data.dto.OperationStatusDto;
+import com.wultra.mtoken.rest.data.dto.OperationTemplate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

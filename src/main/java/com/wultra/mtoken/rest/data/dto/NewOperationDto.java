@@ -26,7 +26,7 @@ public class NewOperationDto {
     private String userId;
 
     @NotNull
-    private String template;
+    private OperationTemplate template;
 
     @Size(min = 2, max = 2)
     private String language;
@@ -59,11 +59,11 @@ public class NewOperationDto {
         this.parameters = parameters;
     }
 
-    public String getTemplate() {
+    public OperationTemplate getTemplate() {
         return template;
     }
 
-    public void setTemplate(String template) {
+    public void setTemplate(OperationTemplate template) {
         this.template = template;
     }
 
