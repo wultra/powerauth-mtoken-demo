@@ -17,5 +17,5 @@
 package com.wultra.mtoken.rest.data.dto;
 
 public enum OperationTemplate {
-    authorize_payment, login
+    login, payment
 }

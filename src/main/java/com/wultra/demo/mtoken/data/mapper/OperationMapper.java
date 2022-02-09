@@ -37,7 +37,7 @@ public abstract class OperationMapper {
     public abstract LoginOperationDto toLoginOperationDto(OperationStatusDto operationStatusDto, User user);
 
     public NewOperationDto toNewOperationDto(User user, NewTransactionDto newTransactionDto) {
-        NewOperationDto newOperationDto = toNewOperationDto(user, OperationTemplate.authorize_payment);
+        NewOperationDto newOperationDto = toNewOperationDto(user, OperationTemplate.payment);
         newOperationDto.setParameters(
                 Map.of(
                         "amount", newTransactionDto.getAmount().toPlainString(),
