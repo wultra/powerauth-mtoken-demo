@@ -34,7 +34,7 @@ public class OperationStatusDto {
     private OperationStatus status;
 
     @NotNull
-    private String template;
+    private String operationType;
 
     private Map<String, String> parameters;
 
@@ -72,6 +72,14 @@ public class OperationStatusDto {
         this.operationId = operationId;
     }
 
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
+    }
+
     public Map<String, String> getParameters() {
         return parameters;
     }
@@ -86,14 +94,6 @@ public class OperationStatusDto {
 
     public void setStatus(OperationStatus status) {
         this.status = status;
-    }
-
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(String template) {
-        this.template = template;
     }
 
     public OffsetDateTime getTimestampCreated() {

@@ -178,7 +178,7 @@ public class UserFacade {
 
         OperationStatusDto operationStatusDto = wultraMtokenService.getOperation(user.getOperationId().toString());
         if (
-                !operationStatusDto.getTemplate().equals(OperationTemplate.login.name()) ||
+                !operationStatusDto.getOperationType().equals(OperationTemplate.login.name()) ||
                 operationStatusDto.getStatus() != OperationStatus.APPROVED
         ) {
             return operationMapper.toLoginOperationDto(operationStatusDto, user);
