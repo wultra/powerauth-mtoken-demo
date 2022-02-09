@@ -34,7 +34,7 @@ public class OperationStatusDto {
     private OperationStatus status;
 
     @NotNull
-    private String operationType;
+    private OperationType operationType;
 
     private Map<String, String> parameters;
 
@@ -72,11 +72,11 @@ public class OperationStatusDto {
         this.operationId = operationId;
     }
 
-    public String getOperationType() {
+    public OperationType getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(String operationType) {
+    public void setOperationType(OperationType operationType) {
         this.operationType = operationType;
     }
 
