@@ -20,9 +20,24 @@ import com.sendgrid.SendGrid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class SendGridConfiguration {
+@EnableWebMvc
+public class SendGridConfiguration implements WebMvcConfigurer {
+    private final String[] corsAllowedOrigins;
+
+    public SendGridConfiguration(@Value("${cors.allowed-origins:}") String[] corsAllowedOrigins) {
+        this.corsAllowedOrigins = corsAllowedOrigins;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins(corsAllowedOrigins);
+    }
+
     @Bean
     public SendGrid sendGrid(@Value("${sendgrid.api-key}") String apiKey) {
         return new SendGrid(apiKey);
