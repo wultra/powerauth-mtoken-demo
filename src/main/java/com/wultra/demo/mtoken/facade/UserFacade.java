@@ -125,6 +125,9 @@ public class UserFacade {
         }
 
         User user = optionalUser.get();
+        if (user.getStatus() == UserStatus.PENDING) {
+            return userMapper.toRegistrationDto(user);
+        }
 
         RegistrationStatusDto registrationStatusDto = wultraMtokenService.getRegistration(user.getId().toString());
         if (registrationStatusDto.getRegistration() == Registration.NONE) {
