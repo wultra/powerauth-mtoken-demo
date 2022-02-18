@@ -23,6 +23,7 @@ import com.wultra.demo.mtoken.data.entity.User;
 import com.wultra.demo.mtoken.data.mapper.DeviceMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -39,5 +40,9 @@ public class DeviceService {
         Device device = deviceMapper.toDevice(user, newDeviceDto);
         device.setId(UUID.randomUUID());
         return deviceRepository.save(device);
+    }
+
+    public Optional<Device> readByUser(User user) {
+        return deviceRepository.findByUser(user);
     }
 }

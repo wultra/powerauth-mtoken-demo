@@ -17,9 +17,12 @@
 package com.wultra.demo.mtoken.data.dao;
 
 import com.wultra.demo.mtoken.data.entity.Device;
+import com.wultra.demo.mtoken.data.entity.User;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface IDeviceRepository extends CrudRepository<Device, UUID> {
+    Optional<Device> findByUser(User user);
 }
