@@ -128,6 +128,10 @@ public class UserFacade {
         if (user.getStatus() == UserStatus.PENDING) {
             return userMapper.toRegistrationDto(user);
         }
+        if (user.getStatus() == UserStatus.ACTIVE) {
+            Optional<Device> device = deviceService.readByUser(user);
+            return userMapper.toRegistrationDto(device.orElseThrow());
+        }
 
         RegistrationStatusDto registrationStatusDto = wultraMtokenService.getRegistration(user.getId().toString());
         if (registrationStatusDto.getRegistration() == Registration.NONE) {
